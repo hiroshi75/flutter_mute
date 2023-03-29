@@ -56,7 +56,11 @@ class FlutterMutePlugin: FlutterPlugin, MethodCallHandler {
         setCurrentRingerMode(result, mode)
       }
       "openNotificationPolicySettings" -> {
+        val returnImmediately = call.argument<Boolean>("returnImmediately") ?: false
         intentManagerService?.launchSettings(context!!)
+        if (returnImmediately) {
+          result.success(true)
+        }
       }
       "isNotificationPolicyAccessGranted" -> {
         getPermissionStatus(result)

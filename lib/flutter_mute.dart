@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 
@@ -6,7 +5,6 @@ import 'package:flutter/services.dart';
 
 /// Ringer Mode
 enum RingerMode {
-
   Normal,
 
   Silent, // Only for android.
@@ -15,7 +13,6 @@ enum RingerMode {
 }
 
 class FlutterMute {
-
   static const MethodChannel _channel = const MethodChannel('flutter_mute');
 
   /// Gets the current device ringer mode.
@@ -33,12 +30,12 @@ class FlutterMute {
   /// above. Require user's grant for Do Not Disturb Access, call the function
   /// [openNotificationPolicySettings] before calling this function.
   static Future<void> setRingerMode(RingerMode mode) async {
-    if(!Platform.isAndroid) {
+    if (!Platform.isAndroid) {
       return;
     }
 
     final raw = RingerMode.values.indexOf(mode);
-    if(raw != -1) {
+    if (raw != -1) {
       await _channel.invokeMethod("setRingerMode", {
         'mode': raw,
       });
@@ -48,20 +45,23 @@ class FlutterMute {
   /// Required to call this function for devices with API 24 and above.
   /// Gets notification policy access status.
   static Future<bool> get isNotificationPolicyAccessGranted async {
-    if(!Platform.isAndroid) {
+    if (!Platform.isAndroid) {
       return true;
     }
 
-    final isGranted = await _channel.invokeMethod("isNotificationPolicyAccessGranted");
+    final isGranted =
+        await _channel.invokeMethod("isNotificationPolicyAccessGranted");
     return isGranted;
   }
 
   /// Open settings notification policy.
-  static Future<void> openNotificationPolicySettings() async {
-    if(!Platform.isAndroid) {
+  static Future<void> openNotificationPolicySettings(
+      {bool returnImmediately = false}) async {
+    if (!Platform.isAndroid) {
       return;
     }
 
-    await _channel.invokeMethod("openNotificationPolicySettings");
+    await _channel.invokeMethod("openNotificationPolicySettings",
+        {'returnImmediately': returnImmediately});
   }
 }
